@@ -2,7 +2,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
-
 /**
  * TEACHER-PROVIDED FRAMEWORK CODE.
  *

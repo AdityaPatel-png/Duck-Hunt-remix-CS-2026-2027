@@ -22,12 +22,11 @@ public class GameWorld {
     private Background background = new Background();
     private Foreground foreground = new Foreground();
     private Tree tree = new Tree();
-    private Bush bush1 = new Bush(90, GROUND_TOP - 44, 130, 55);
-    private Bush bush2 = new Bush(510, GROUND_TOP - 38, 120, 49);
-
     private int stars = 5;
     private boolean finished = false;
     private boolean won = false;
+    int score = 0;
+    Music MYHOUSE = new Music("MY HOUSE!!!!.wav", false);
 
     public GameWorld(Dog dog) {
         this.dog = dog;
@@ -64,13 +63,6 @@ public class GameWorld {
         if (duck1 != null) {
             duck1.update();
         }
-        if (duck2 != null) {
-            duck2.update();
-        }
-        if (duck3 != null) {
-            duck3.update();
-        }
-
         dog.update();
 
         if (duckToRetrieve != null && duckToRetrieve.hasLanded()
@@ -78,25 +70,19 @@ public class GameWorld {
             dog.startRetrieving(duckToRetrieve.getX());
         }
 
-        if (duckToRetrieve != null && dog.hasRetrievedDuck()) {
-            duckToRetrieve.deactivate();
-            duckToRetrieve = null;
+        if (dog.hasRetrievedDuck()) {
             dog.reset();
-
-            if (allDucksRetrieved()) {
-                finished = true;
-                won = true;
-            }
+            duck1.reset();
+            duck1.maxframe += 1;
+            duck1.maxframe2 += 1;
+            duckToRetrieve = null;
         }
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics g){
         background.paint(g);
-        tree.paint(g);
         foreground.paint(g);
-        bush1.paint(g);
-        bush2.paint(g);
-
+        tree.paint(g);
         if (duck1 != null && duck1.isActive()) {
             duck1.paint(g);
         }
@@ -111,16 +97,32 @@ public class GameWorld {
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("SansSerif", Font.BOLD, 20));
-        g.drawString("Stars / lives: " + stars, 20, 30);
-
+        g.drawString("HOUSE STRUCTURAL STRENGTH: " + stars*20 + "%", 20, 30);
+        g.drawString("SCORE:", 20, 60);
+    	if (score>200) {
+    		g.setColor(Color.red);
+    	} else if (score > 100) {
+        	g.setColor(Color.orange);
+        } else if (score > 50) {
+        	g.setColor(Color.yellow);
+        } else if (score > 10) {
+        	g.setColor(Color.green);
+        } else {
+        	g.setColor(Color.black);
+        }
+        g.drawString("" + score, 100, 60);
+        g.setColor(Color.black);
         if (finished) {
             g.setFont(new Font("SansSerif", Font.BOLD, 32));
 
             if (won) {
                 g.drawString("You retrieved every duck!", 245, 80);
             } else {
-                g.drawString("Out of stars!", 350, 80);
-            }
+                g.drawString("YOU BURNED DOWN THE HOUSE", 350, 80);
+                dog.changePicture("MYHOUSE.gif");
+                dog.setLocation(600, 300);
+                tree.changePicture("houseburning.gif");
+                }
         }
     }
 
@@ -136,28 +138,23 @@ public class GameWorld {
         Duck clickedDuck = null;
         if (duck1 != null && duck1.wasClicked(mouseX, mouseY)) {
             clickedDuck = duck1;
-        } else if (duck2 != null && duck2.wasClicked(mouseX, mouseY)) {
-            clickedDuck = duck2;
-        } else if (duck3 != null && duck3.wasClicked(mouseX, mouseY)) {
-            clickedDuck = duck3;
         }
-
         if (clickedDuck != null) {
             clickedDuck.startFalling();
             duckToRetrieve = clickedDuck;
+            score+=1;
         } else {
             stars = stars - 1;
 
             if (stars <= 0) {
                 finished = true;
                 won = false;
+                MYHOUSE.play();
             }
         }
     }
 
     private boolean allDucksRetrieved() {
-        return (duck1 == null || !duck1.isActive())
-                && (duck2 == null || !duck2.isActive())
-                && (duck3 == null || !duck3.isActive());
+        return (duck1.isFalling());
     }
 }

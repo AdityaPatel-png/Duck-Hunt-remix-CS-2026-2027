@@ -5,8 +5,8 @@
  * Dog move toward that location and report when the retrieval is complete.
  */
 public class Dog extends Sprite {
-    private static final int DOG_WIDTH = 69;
-    private static final int DOG_HEIGHT = 94;
+    private static final int DOG_WIDTH = 200;
+    private static final int DOG_HEIGHT = 300;
 
     // STUDENT SETTING
     private int speed = 6;
@@ -16,9 +16,9 @@ public class Dog extends Sprite {
     private int targetX;
     private boolean retrieving = false;
     private boolean retrievedDuck = false;
-
+    private boolean retract = false;
     public Dog() {
-        super("dog1.png", 40, GameWorld.GROUND_TOP - DOG_HEIGHT,
+        super("idle.png", 40, 600,
                 DOG_WIDTH, DOG_HEIGHT);
 
         homeX = x;
@@ -31,7 +31,6 @@ public class Dog extends Sprite {
             targetX = duckX;
             retrieving = true;
             retrievedDuck = false;
-            changePicture("dog2.png");
         }
     }
 
@@ -47,6 +46,23 @@ public class Dog extends Sprite {
     public void update() {
         if (!retrieving) {
             return;
+        } else {
+        	if (targetX>x + 10) {
+        		x += speed;
+        	} else if (targetX < x - 10) {
+        		x -= speed;
+        	} else {
+        		if (y>300 && retract == false) {
+        			y -= 3;
+        		} else if (y<600) {
+        			retract = true;
+        			y+=3;
+        		} else {
+        		retract = false;
+        		retrievedDuck = true;
+        		retrieving = false;
+        		}
+        	}
         }
 
         // Write your Dog movement code here.
@@ -57,6 +73,7 @@ public class Dog extends Sprite {
     }
 
     public boolean hasRetrievedDuck() {
+    	changePicture("Caught.png");
         return retrievedDuck;
     }
 
@@ -65,6 +82,6 @@ public class Dog extends Sprite {
         setLocation(homeX, homeY);
         retrieving = false;
         retrievedDuck = false;
-        changePicture("dog1.png");
+        changePicture("idle.png");
     }
 }

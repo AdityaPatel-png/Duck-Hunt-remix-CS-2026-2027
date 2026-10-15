@@ -21,28 +21,29 @@ public class Frame extends JPanel implements ActionListener {
     // ===============================
     // STUDENT OBJECTS
     // ===============================
-    private Duck duck1 = new Duck(150, 120);
+    private Duck duck1 = new Duck(-20, -380);
 
     // STEP 6: Uncomment these one at a time, or create your own Ducks.
-     private Duck duck2 = new Duck(380, 180);
-    // private Duck duck3 = new Duck(620, 100);
 
     private Dog dogObject = new Dog();
     private GameWorld world = new GameWorld(dogObject);
-
+    
+    Music MYHOUSE = new Music("MY HOUSE!!!!.wav", false);
+    Music woosh = new Music("woosh.wav", true);
+    Music ouch = new Music("ouch.wav", false);
+    Music spooky = new Music("spooky.wav", false);
     public Frame() {
         // STEP 6: Add each Duck to the world after declaring it above.
         world.addDuck(duck1);
-         world.addDuck(duck2);
-        // world.addDuck(duck3);
 
         world.start();
-
+        spooky.loop();
         setPreferredSize(new Dimension(GameWorld.WORLD_WIDTH, GameWorld.WORLD_HEIGHT));
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
                 world.handleClick(event.getX(), event.getY());
+                woosh.play();
             }
         });
 

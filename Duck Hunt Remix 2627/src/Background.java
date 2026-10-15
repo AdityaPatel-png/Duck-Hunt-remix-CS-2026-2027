@@ -4,7 +4,7 @@ import java.awt.Graphics;
 /**
  * TEACHER-PROVIDED VISUAL CLASS.
  * Draws the sky behind the game objects.
- */
+ */ 
 public class Background {
     public void paint(Graphics g) {
         g.setColor(new Color(145, 205, 245));

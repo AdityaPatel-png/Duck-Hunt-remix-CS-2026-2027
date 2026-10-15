@@ -8,9 +8,16 @@ public class Duck extends Sprite {
     // ===============================
     // STUDENT SETTINGS
     // ===============================
-    private int dx = 4;
-    private int dy = 2;
-
+    private int dx = 0;
+    private double dy = 0;
+    private int frame = 0;
+    private int frame2 = 0;
+    int maxframe = 32;
+    int maxframe2 = 16;
+    private int direction = 1;
+    private int direction2 = 1;
+    private int frame3 = 0;
+    Music ouch = new Music("ouch.wav", false);
     // ===============================
     // GAME STATE - mostly provided
     // ===============================
@@ -20,6 +27,7 @@ public class Duck extends Sprite {
     private boolean active = false;
     private boolean falling = false;
     private boolean landed = false;
+    
 
     public Duck() {
         this(150, 120);
@@ -27,10 +35,10 @@ public class Duck extends Sprite {
 
     public Duck(int startX, int startY) {
         // Change duck.gif to your own Halloween or fall image later.
-        super("duck.gif", startX, startY, 90, 90);
+        super("spider.png", startX, startY, 100, 500);
 
-        homeX = startX;
-        homeY = startY;
+        homeX = startX+50;
+        homeY = startY-300;
     }
 
     /**
@@ -45,20 +53,44 @@ public class Duck extends Sprite {
 
         if (falling) {
             // STEP 3: Uncomment and complete the falling code.
-            // y = y + fallSpeed;
-            // fallSpeed = fallSpeed + 1;
-            // if (y + height >= GameWorld.GROUND_TOP) {
-            //     y = GameWorld.GROUND_TOP - height;
-            //     landed = true;
-            // }
+            y = y + fallSpeed;
+            fallSpeed = fallSpeed + 1;
+            if (y >= GameWorld.GROUND_TOP) {
+                 landed = true;
+            }
 
             return;
         }
 
         // STEP 1: Uncomment these lines to move the Duck.
-        // x = x + dx;
-        // y = y + dy;
-
+        frame+=direction;
+        frame2+=direction2;
+        frame3+=1;
+        int descending = 1;
+        if (frame>= maxframe) {
+        	frame = maxframe;
+        	direction = -1;
+        }
+        if (frame<=-maxframe) {
+        	frame = -maxframe;
+        	direction = 1;
+        }
+        if (frame2>=maxframe2) {
+        	frame2 = maxframe2;
+        	direction2 = -1;
+        }
+        if (frame2<=-maxframe2) {
+        	frame2 = -maxframe2;
+        	direction2 = 1;
+        }
+        if (frame3>=500) {
+        	descending = 0;
+        }
+        dx = (int) (frame*.75);
+        dy = frame2*.5;
+         x = x + dx;
+         y = y + (int) dy + descending;
+         
         // STEP 2: Add if statements that bounce the Duck off the edges.
         // Hint: reverse a direction by changing dx to -dx or dy to -dy.
         // Hint: GameWorld.WORLD_WIDTH is the width of the game.
@@ -71,8 +103,9 @@ public class Duck extends Sprite {
      */
     public void startFalling() {
         if (active && !falling) {
-            // falling = true;
-            // fallSpeed = 2;
+            falling = true;
+            fallSpeed = 2;
+            ouch.play();
         }
     }
 
@@ -110,5 +143,11 @@ public class Duck extends Sprite {
         fallSpeed = 2;
         falling = false;
         landed = false;
+        active = true;
+        direction = 1;
+        direction2 = 1;
+        frame = 0;
+        frame2=0;
+        frame3=0;
     }
 }
